@@ -1,0 +1,353 @@
+
+<?php
+  // define variables to empty values  
+  $usernameErr  = $emailErr = $mobilenoErr = $genderErr = $passwordErr = $agreeErr = "";
+  $username  = $email = $mobileno = $gender = $password = $agree = "";
+
+  //Input fields validation  
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    //Username Validation  
+    if (empty($_POST["username"])) {
+      $usernameErr = "UserName is required";
+    } else {
+      $username = input_data($_POST["username"]);
+      // check if name only contains letters and whitespace  
+      if (!preg_match("/^[a-zA-Z ]*$/", $username)) {
+        $usernameErr = "Only alphabets and white space are allowed";
+      }
+    }
+
+    //Email Validation   
+    if (empty($_POST["email"])) {
+      $emailErr = "Email is required";
+    } else {
+      $email = input_data($_POST["email"]);
+      // check that the e-mail address is well-formed  
+      if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Invalid email format";
+      }
+    }
+
+
+    //Validates password & confirm passwords.
+    if (!empty($_POST["password"])) {
+      $password = input_data($_POST["password"]);
+
+      if (strlen($_POST["password"]) <= '8') {
+        $passwordErr = "Your Password Must Contain At Least 8 Characters!";
+      } elseif (!preg_match("#[0-9]+#", $password)) {
+        $passwordErr = "Your Password Must Contain At Least 1 Number!";
+      } elseif (!preg_match("#[A-Z]+#", $password)) {
+        $passwordErr = "Your Password Must Contain At Least 1 Capital Letter!";
+      } elseif (!preg_match("#[a-z]+#", $password)) {
+        $passwordErr = "Your Password Must Contain At Least 1 Lowercase Letter!";
+      }
+    }
+
+    //Number Validation  
+    if (empty($_POST["mobileno"])) {
+      $mobilenoErr = "Mobile no is required";
+    } else {
+      $mobileno = input_data($_POST["mobileno"]);
+      // check if mobile no is well-formed  
+      if (!preg_match("/^[0-9]*$/", $mobileno)) {
+        $mobilenoErr = "Only numeric value is allowed.";
+      }
+      //check mobile no length should not be less and greator than 10  
+      if (strlen($mobileno) != 10) {
+        $mobilenoErr = "Mobile no must contain 10 digits.";
+      }
+    }
+
+    //Gender Field Validation  
+    if (empty($_POST["gender"])) {
+      $genderErr = "Gender is required";
+    } else {
+      $gender = input_data($_POST["gender"]);
+    }
+
+    //Checkbox Validation  
+    if (!isset($_POST['agree'])) {
+      $agreeErr = "Accept terms of services before submit.";
+    } else {
+      $agree = input_data($_POST["agree"]);
+    }
+  }
+  function input_data($data)
+  {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
+  ?>
+
+
+
+
+
+
+
+
+
+
+
+  <body>
+
+
+  <br><br>
+  <div class="container">
+    <div class="row col-md-6 col-md-offset-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading text-center">
+          <h1>Registration Form</h1>
+        </div>
+        <div class="panel-body">
+          <form method="post" action="">
+            <div class="form-group col-md-6">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" id="username" name="username" value="<?php echo $username; ?>" required />
+              <!-- <span class="error"><?php echo $usernameErr; ?> </span> -->
+
+            </div>
+            <div class="form-group col-md-6">
+              <label for="email">Email</label>
+              <input type="text" class="form-control" id="email" name="email"  value="<?php echo $email; ?>" required>
+              <!-- <span class="error"><?php echo $emailErr; ?> </span> -->
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" value="<?php echo $_POST['password']; ?>" required>
+              <!-- <span class="error"><?php echo $passwordErr; ?> </span> -->
+            </div>
+			<div class="form-group col-md-6">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="cpassword" name="cpassword" value="<?php echo $_POST['cpassword']; ?>" required>
+              <!-- <span class="error"><?php echo $passwordErr; ?> </span> -->
+            </div>
+
+
+            <!-- <div class="form-group col-md-6">
+              <label for="text">Phone Number</label>
+              <input type="text" class="form-control" id="mobileno" name="mobileno" value="<?php echo $_POST['mobileno']; ?>" required>
+              <span class="error"><?php echo $mobilenoErr; ?> </span>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="gender">Gender</label>
+              <div>
+                <label for="male" class="radio-inline"><input type="radio" name="gender" value="m" id="male" />Male</label>
+                <label for="female" class="radio-inline"><input type="radio" name="gender" value="f" id="female" />Female</label>
+                <label for="others" class="radio-inline"><input type="radio" name="gender" value="o" id="others" />Others</label>
+                <span class="error"><?php echo $genderErr; ?> </span>
+              </div>
+            </div> -->
+
+            <div class="form-group col-md-12">
+              <input type="checkbox" name="agree" value="<?php echo $_POST['agree']; ?>" required>
+              <span class="error"><?php echo $agreeErr; ?> Please select term & condition,if you want to proceed!</span>
+            </div>
+            <button name="submit" value="submit" type="submit" class="btn btn-primary btn-sm btn-block text-uppercase shadow-4 mb-4">
+              Signup<i class="fa fa-sign-in" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+        <p class="container">
+          <a class="btn btn-link" href="login.php">Already have an account?
+            Login here</button>
+            <span><a class="btn btn-link" href="">Forgot user and password?</a></span>
+        </p>
+
+        <div class="panel-footer text-right">
+          <small>&copy; SecureMetasys Pvt Ltd.</small>
+        </div>
+
+      </div>
+     
+    </div>
+  </div>
+</body>
+
+
+
+
+<?php
+  /**
+  * Requires the "PHP Email Form" library
+  * The "PHP Email Form" library is available only in the pro version of the template
+  * The library should be uploaded to: vendor/php-email-form/php-email-form.php
+  * For more info and help: https://bootstrapmade.com/php-email-form/
+  */
+
+  // Replace contact@example.com with your real receiving email address
+  $receiving_email_address = 'contact@example.com';
+
+  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
+    include( $php_email_form );
+  } else {
+    die( 'Unable to load the "PHP Email Form" Library!');
+  }
+
+  $contact = new PHP_Email_Form;
+  $contact->ajax = true;
+  
+  $contact->to = $receiving_email_address;
+  $contact->from_name = $_POST['name'];
+  $contact->from_email = $_POST['email'];
+  $contact->subject = 'Online Appointment Form';
+
+  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
+  /*
+  $contact->smtp = array(
+    'host' => 'example.com',
+    'username' => 'example',
+    'password' => 'pass',
+    'port' => '587'
+  );
+  */
+
+  $contact->add_message( $_POST['name'], 'Name');
+  $contact->add_message( $_POST['email'], 'Email');
+  $contact->add_message( $_POST['phone'], 'Phone');
+  $contact->add_message( $_POST['date'], 'Appointment Date');
+  $contact->add_message( $_POST['department'], 'Department');
+  $contact->add_message( $_POST['doctor'], 'Doctor');
+  $contact->add_message( $_POST['message'], 'Message');
+
+  echo $contact->send();
+?>
+
+
+<?php
+
+
+<?php 
+
+include 'connection_db.php';
+
+
+
+    if(isset($_POST['btn-send']))
+    {
+       $UserName = $_POST['name'];
+       $Email = $_POST['email'];
+       $Subject = $_POST['subject'];
+       $Msg = $_POST['msg'];
+
+       $sql = "SELECT * FROM contact WHERE email='$email'";
+       $result = mysqli_query($conn, $sql);
+       if (!$result->num_rows > 0) {
+         $sql = "INSERT INTO contact (name, email, subject, msg)
+               VALUES ('$name', '$email', '$subject', $msg'";
+         $result = mysqli_query($conn, $sql);
+         if ($result) {
+           echo "<script>alert('Wow! Appintment booked  Successfully.')</script>";
+           $name = "";
+           $email = "";
+           $subject = "";
+           $msg = "";
+          
+         } else {
+           echo "<script>alert('Woops! Something Wrong Went.')</script>";
+         }
+       } else {
+         echo "<script>alert('Woops! Email Already Exists.')</script>";
+       }
+     }
+  
+?>
+
+
+<script>
+    window.addEventListener('load', function() {
+
+    });
+    function appointment_delete() {
+        swal({
+  title: "Are you sure?",
+  text: "Once deleted, you will not be able to recover this imaginary file!",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    console.log("Yes");
+    // swal("Poof! Your imaginary file has been deleted!", {
+ 
+  } else {
+    // swal("Your imaginary file is safe!");
+    console.log("No");
+  }
+});
+    }
+</script>
+
+
+
+
+function header_delete(id) {
+  swal.fire({
+    title: 'warning!',
+    icon: 'warning',
+    text: 'do you want to delete Header Color?',
+    showCancelButton: true,
+    showConfirmButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'No',
+    confirmButtonText: 'Yes',
+    reverseButtons: true
+  })
+    .then(function (result) {
+      if (result.value) {
+        window.location.href = "/admin/header_delete/" + id
+       
+      }
+    
+    })
+}
+ <a class="dropdown-item text-danger delete_item" href="#"
+                                    onclick="author_delete({{ author.id }})">
+                                    <span class="fas fa-trash-alt mr-2"></span>Remove
+                                </a>
+	<?php
+	if (isset($_SESSION['status']) && $_SESSION['status'] != '') 
+	{
+	?>
+
+  	<?php
+
+		unset($_SESSION['status']);
+	}
+	?>
+
+
+
+      <script>
+        window.addEventListener('load', function() {
+
+        });
+
+        function delete_appointment(id) {
+            swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        console.log("Yes");
+                        // swal("Poof! Your imaginary file has been deleted!", {
+
+                    } else {
+                        // swal("Your imaginary file is safe!");
+                        console.log("No");
+                    }
+                });
+        }
+    </script>
